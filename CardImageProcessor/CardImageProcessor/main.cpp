@@ -92,31 +92,62 @@ Mat processImage( Mat image, string imageFilename )
     
     
     //-------------------------
-    // Show OCR regions on Image
+    //
     //
     for ( int i = 0; i < OCRregions.size(); i++ )
     {
-        Card logo = OCRregions[i];
+        Card card = OCRregions[i];
         
-        string logoText = logo.str();
+        string cardText = card.str();
         
         
         if ( cardDetector.downsize )
-        {
             resize( image, OCRoutput, Size( 450, 287 ) ); //size = credit card's w:h ration
-        }
         
         
-        rectangle( OCRoutput, logo.cardPosition, Scalar( 255, 0, 255 ), 3 );
+        // Show OCR regions on Image
+        rectangle( OCRoutput, card.cardPosition, Scalar( 255, 0, 255 ), 3 );
         putText( OCRoutput,
-                logoText,
-                Point( logo.cardPosition.x, logo.cardPosition.y - 10 ),
+                cardText,
+                Point( card.cardPosition.x, card.cardPosition.y - 10 ),
                 FONT_HERSHEY_PLAIN,
                 2,
                 Scalar( 255, 0, 255 ),
                 5 );
-        cout << logoText << " ";
+        
+        
+        // Check each character,
+        // increment digitCounter each time found a digit
+        // use digitCounter to check whether found string represents
+        // cardNumber, cardExp, cardholderName
+        int digitCounter = 0;
+        for ( int j = 0; j < cardText.size(); ++j )
+        {
+            if ( cardText[j] == '0' || cardText[j] == '1' ||
+                 cardText[j] == '2' || cardText[j] == '3' ||
+                 cardText[j] == '4' || cardText[j] == '5' ||
+                 cardText[j] == '6' || cardText[j] == '7' ||
+                 cardText[j] == '8' || cardText[j] == '9' )
+                ++digitCounter;
+        }
+    
+        
+        
+        if ( digitCounter < 2 )
+            cardDetector.cardholderName = cardText;
+        else if ( digitCounter > 2 && digitCounter < 6 )
+            cardDetector.cardExp = cardText;
+        else
+            cardDetector.cardNumber = cardText;
+        
     }
+    
+    
+    cout << "Cardholder Name: " << cardDetector.cardholderName << endl;
+    cout << "Expiriation Date: " << cardDetector.cardExp << endl;
+    cout << "Serial Number: " << cardDetector.cardNumber << endl;
+    
+    
     
     if ( cardDetector.saveResult )
     {

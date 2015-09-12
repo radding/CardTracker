@@ -45,21 +45,21 @@ bool CardDetector::isRepetitive( const string& str )
     int last = (int) str[(int) str.size() - 1];
     
     
-    for ( int i = 0; i < (int) str.size(); i++ )
+    for ( int i = 0; i < (int) str.size(); ++i )
     {
         if ( ( str[i] == 'i' ) || ( str[i] == 'l' ) || ( str[i] == 'I' ) )
         {
-            count1++;
+            ++count1;
         }
         
         if ( (int) str[i] == first )
         {
-            count2++;
+            ++count2;
         }
         
         if ( (int) str[i] == last )
         {
-            count3++;
+            ++count3;
         }
     }
     
@@ -85,7 +85,7 @@ void CardDetector::ERdraw( vector<Mat> &channels,
                           vector<Vec2i> group,
                           Mat &segmentation )
 {
-    for ( int i = 0; i < (int) group.size(); i++ )
+    for ( int i = 0; i < (int) group.size(); ++i )
     {
         ERStat ER = regions[group[i][0]][group[i][1]];
         if ( ER.parent != NULL )
@@ -128,14 +128,6 @@ vector<Card> CardDetector::detectText( Mat input )
     
     for ( int i = 0; i < 2; i++ )
     {
-//        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "classifiers/trained_classifierNM1.xml"),
-//                                                    8,
-//                                                    0.00015f,
-//                                                    0.13f,
-//                                                    0.2f,
-//                                                    true,
-//                                                    0.1f );
-        
         Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "classifiers/trained_classifierNM1.xml"),
                                                     8,
                                                     0.00015f,
@@ -204,7 +196,7 @@ vector<Card> CardDetector::detectText( Mat input )
     // 6. Crop, resize, and save regions
     cout << "● Extracting Scene Text" << endl;
     
-    for ( int i = 0; i < (int) nmBoxes.size(); i++ )
+    for ( int i = 0; i < (int) nmBoxes.size(); ++i )
     {
         Mat boxCrop;
         Mat boxResized;
@@ -241,7 +233,7 @@ vector<Card> CardDetector::detectText( Mat input )
 
     if ( showRegions )
     {
-        for ( int i = 0; i < characterBoxes.size(); i++ )
+        for ( int i = 0; i < characterBoxes.size(); ++i )
         {
             imshow( "Scene Text Regions", characterBoxes[i].imgCard );
             waitKey( 2000 );
@@ -311,7 +303,7 @@ vector<Card> CardDetector::recognizeText( vector<Card> possibleRegions )
     float minConfidence2 = 60.f; //60.f
     
     
-    for ( int i = 0; i < possibleRegions.size(); i++ )
+    for ( int i = 0; i < possibleRegions.size(); ++i )
     {
         Mat region = possibleRegions[i].imgCard;
         
@@ -352,7 +344,7 @@ vector<Card> CardDetector::recognizeText( vector<Card> possibleRegions )
         // how to skip erGrouping above to jump directly to this below loop yet.
         // If figured out, then we can recognize text in parallel.
         vector<Mat> detections;
-        for ( int j = 0; j < (int) nmBoxes.size(); j++ )
+        for ( int j = 0; j < (int) nmBoxes.size(); ++j )
         {
             Mat groupImg = Mat::zeros( region.rows + 2, region.cols + 2, CV_8UC1 );
             ERdraw( channels, regions, nmRegionGroups[j], groupImg );
@@ -370,7 +362,7 @@ vector<Card> CardDetector::recognizeText( vector<Card> possibleRegions )
         vector<float>  confidences;
         vector<string> wordsDetection;
         
-        for ( int j = 0; j < detections.size(); j++ )
+        for ( int j = 0; j < detections.size(); ++j )
         {
             string output;
             
@@ -384,7 +376,7 @@ vector<Card> CardDetector::recognizeText( vector<Card> possibleRegions )
             // Save characters position of each region
             possibleRegions[i].charactersPosition = boxes;
             
-            for ( int z = 0; z < words.size(); z++ )
+            for ( int z = 0; z < words.size(); ++z )
             {
                 
                 if ( ( confidences[z] < minConfidence1 ) ||
@@ -395,6 +387,7 @@ vector<Card> CardDetector::recognizeText( vector<Card> possibleRegions )
                     continue;
                 }
                 wordsDetection.push_back( words[z] );
+
             }
             
             
@@ -416,10 +409,10 @@ vector<Card> CardDetector::recognizeText( vector<Card> possibleRegions )
         // 7. Concatenate strings
         string concatenatedString;
         
-        for ( int j = 0; j < wordsDetection.size(); j++ )
-        {
+        for ( int j = 0; j < wordsDetection.size(); ++j )
             concatenatedString = concatenatedString + wordsDetection[j];
-        }
+   
+        
         
         cout << "       ⦿ OCR result: " << concatenatedString << endl;
         
@@ -427,9 +420,6 @@ vector<Card> CardDetector::recognizeText( vector<Card> possibleRegions )
         
         // Accept all OCR results
         OCRregions.push_back( possibleRegions[i] );
-
-        // Put string classification here (cardNumber, cardExp, cardCSV)
-
         
     }
     

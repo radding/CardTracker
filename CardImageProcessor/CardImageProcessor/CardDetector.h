@@ -128,6 +128,9 @@ class CardDetector
 public:
     CardDetector();
     string filename;
+    string cardNumber;
+    string cardExp;
+    string cardholderName;
     void setFilename( string str );
     
     bool downsize;

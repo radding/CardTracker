@@ -27,9 +27,6 @@ public:
     string str();
     vector<string> characters;
     vector<Rect> charactersPosition;
-    string cardNumber;
-    string cardExp;
-    string cardCVV;
     
 };
 
