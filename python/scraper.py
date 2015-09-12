@@ -29,12 +29,11 @@ class Scraper(object):
                 else:
                     self.next_urls.put(link.get('href'))
 
-                #print("[[[\n" + str(self.next_urls) + "\n]]]")
-
     def run(self):
         while not self.next_urls.empty():
             next_url = self.get_next_url()
             page = BeautifulSoup(requests.get(next_url).text, "html.parser")
+            # USE REQUESTS YOU
             self.temp_base = next_url
             self.prev_urls.append(next_url)
             self.process_page(page)
