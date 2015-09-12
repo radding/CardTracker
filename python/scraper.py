@@ -3,6 +3,11 @@ from Queue import Queue
 import requests
 import url
 
+# disable warnings for debugging
+import urllib3
+urllib3.disable_warnings()
+
+
 class Scraper(object):
     ''' Scraper Class '''
 
@@ -37,10 +42,10 @@ class Scraper(object):
         while not self.next_urls.empty():
             next_url = self.get_next_url()
             print(url.Url(next_url).to_json())
+
             page = BeautifulSoup(requests.get(next_url).text, "html.parser")
-            # USE REQUESTS YOU
-            #self.temp_base = next_url
             self.prev_urls.append(next_url)
+            #self.temp_base = next_url
             self.process_page(page)
 
 
