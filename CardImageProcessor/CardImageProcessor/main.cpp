@@ -13,10 +13,10 @@
 
 
 #include "Card.h"
-#include "CardDetector.h"
+#include "TextBox.h"
 
 #include "Card.cpp"
-#include "CardDetector.cpp"
+#include "TextBox.cpp"
 
 
 using namespace std;
@@ -73,85 +73,96 @@ string getFilename( string filename )
 //
 Mat processImage( Mat image, string imageFilename )
 {
+    bool drawOCR = false; //set to false when combine program because drawing textboxes are still buggy
     
     //-------------------------
     // Detect Logo
     //
     Mat OCRoutput = image.clone();
-    CardDetector cardDetector;
-    cardDetector.setFilename( imageFilename );
-    cardDetector.downsize       = false;
-    cardDetector.showRegions    = false;
-    cardDetector.saveRegions    = false;
-    cardDetector.saveResult     = true;
+    Card card;
+    card.setFilename( imageFilename );
     
     
-    vector<Card> sceneTextRegions = cardDetector.detectText( image );
-    vector<Card> OCRregions = cardDetector.recognizeText( sceneTextRegions );
+    vector<TextBox> sceneTextRegions = card.detectText( image );
+    vector<TextBox> OCRregions = card.recognizeText( sceneTextRegions );
     
     
     
     //-------------------------
+    // Show OCR regions on Image
     //
-    //
-    for ( int i = 0; i < OCRregions.size(); i++ )
+    if ( drawOCR )
     {
-        Card card = OCRregions[i];
-        
-        string cardText = card.str();
-        
-        
-        if ( cardDetector.downsize )
-            resize( image, OCRoutput, Size( 450, 287 ) ); //size = credit card's w:h ration
-        
-        
-        // Show OCR regions on Image
-        rectangle( OCRoutput, card.cardPosition, Scalar( 255, 0, 255 ), 3 );
-        putText( OCRoutput,
-                cardText,
-                Point( card.cardPosition.x, card.cardPosition.y - 10 ),
-                FONT_HERSHEY_PLAIN,
-                2,
-                Scalar( 255, 0, 255 ),
-                5 );
-        
-        
-        // Check each character,
-        // increment digitCounter each time found a digit
-        // use digitCounter to check whether found string represents
-        // cardNumber, cardExp, cardholderName
-        int digitCounter = 0;
-        for ( int j = 0; j < cardText.size(); ++j )
+        for ( int i = 0; i < OCRregions.size(); i++ )
         {
-            if ( cardText[j] == '0' || cardText[j] == '1' ||
-                 cardText[j] == '2' || cardText[j] == '3' ||
-                 cardText[j] == '4' || cardText[j] == '5' ||
-                 cardText[j] == '6' || cardText[j] == '7' ||
-                 cardText[j] == '8' || cardText[j] == '9' )
-                ++digitCounter;
+            TextBox textBox = OCRregions[i];
+            string text = textBox.str();
+            
+            
+            if ( card.downsize )
+            resize( image, OCRoutput, Size( 450, 287 ) ); //size = credit card's w:h ration
+            
+            rectangle( OCRoutput, textBox.textBoxPosition, Scalar( 255, 0, 255 ), 3 );
+            putText( OCRoutput,
+                    text,
+                    Point( textBox.textBoxPosition.x, textBox.textBoxPosition.y - 10 ),
+                    FONT_HERSHEY_PLAIN,
+                    2,
+                    Scalar( 255, 0, 255 ),
+                    5 );
+            
         }
-    
-        
-        
-        if ( digitCounter < 2 )
-            cardDetector.cardholderName = cardText;
-        else if ( digitCounter > 2 && digitCounter < 6 )
-            cardDetector.cardExp = cardText;
-        else
-            cardDetector.cardNumber = cardText;
-        
     }
-    
-    
-    cout << "Cardholder Name: " << cardDetector.cardholderName << endl;
-    cout << "Expiriation Date: " << cardDetector.cardExp << endl;
-    cout << "Serial Number: " << cardDetector.cardNumber << endl;
+
     
     
     
-    if ( cardDetector.saveResult )
+    
+    //-------------------------
+    // Print strings of each category
+    //
+    cout << "Cardholder Name: ";
+    for ( int i = 0; i < card.cardholderName.size();  ++i )
     {
-        string outputFilename = "result/" + cardDetector.filename + "-OCR.JPG";
+        if ( i != card.cardholderName.size() - 1 )
+            cout << card.cardholderName[i] << ", ";
+        else
+            cout << card.cardholderName[i];
+    }
+    cout << endl;
+    
+    
+    
+    cout << "Expiriation Date: ";
+    for ( int i = 0; i < card.cardExp.size();  ++i )
+    {
+        if ( i != card.cardExp.size() - 1 )
+            cout << card.cardExp[i] << ", ";
+        else
+            cout << card.cardExp[i];
+    }
+    cout << endl;
+    
+    
+    
+    cout << "Serial Number: ";
+    for ( int i = 0; i < card.cardNumber.size();  ++i )
+    {
+        if ( i != card.cardNumber.size() - 1 )
+            cout << card.cardNumber[i] << ", ";
+        else
+            cout << card.cardNumber[i];
+    }
+    cout << endl;
+    
+    
+    
+    
+    // Machine learning purpose, not really
+    // used but I leave it here just in case
+    if ( card.saveResult )
+    {
+        string outputFilename = "result/" + card.filename + "-OCR.JPG";
         imwrite( outputFilename, OCRoutput );
     }
     
@@ -167,6 +178,7 @@ Mat processImage( Mat image, string imageFilename )
 //
 int main(int argc, const char * argv[])
 {
+    bool showOCR = false;
     
     //-------------------------
     // Retrieve image
@@ -186,7 +198,6 @@ int main(int argc, const char * argv[])
     string inputFilename = getFilename( inputPath );
     
     
-    
     Mat image;
     image = imread( inputPath, 1 );
     
@@ -199,15 +210,17 @@ int main(int argc, const char * argv[])
     cout << "● Processing Image " << inputFilename << "..." << endl;
     
     
+    
     Mat outputImage = processImage( image, inputFilename );
     
     
     
-    //-------------------------
     // Show result
-    //
-    imshow( inputFilename , outputImage );
-    waitKey( 0 );
+    if ( showOCR )
+    {
+        imshow( inputFilename , outputImage );
+        waitKey( 0 );
+    }
     
     
     

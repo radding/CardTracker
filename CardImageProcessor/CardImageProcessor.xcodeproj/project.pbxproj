@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4D5710701BA3EE9B00F9C873 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D57106F1BA3EE9B00F9C873 /* main.cpp */; };
-		4D5710781BA3EF8500F9C873 /* CardDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D5710771BA3EF8500F9C873 /* CardDetector.cpp */; };
-		4D57107B1BA3F0BC00F9C873 /* Card.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D5710791BA3F0BC00F9C873 /* Card.cpp */; };
+		4D5710841BA4709100F9C873 /* TextBox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D5710821BA4709100F9C873 /* TextBox.cpp */; };
+		4D5710871BA4710B00F9C873 /* Card.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4D5710851BA4710B00F9C873 /* Card.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,10 +27,10 @@
 /* Begin PBXFileReference section */
 		4D57106C1BA3EE9B00F9C873 /* CardImageProcessor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CardImageProcessor; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D57106F1BA3EE9B00F9C873 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		4D5710761BA3EF7F00F9C873 /* CardDetector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardDetector.h; sourceTree = "<group>"; };
-		4D5710771BA3EF8500F9C873 /* CardDetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CardDetector.cpp; sourceTree = "<group>"; };
-		4D5710791BA3F0BC00F9C873 /* Card.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Card.cpp; sourceTree = "<group>"; };
-		4D57107A1BA3F0BC00F9C873 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
+		4D5710821BA4709100F9C873 /* TextBox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextBox.cpp; sourceTree = "<group>"; };
+		4D5710831BA4709100F9C873 /* TextBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextBox.h; sourceTree = "<group>"; };
+		4D5710851BA4710B00F9C873 /* Card.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Card.cpp; sourceTree = "<group>"; };
+		4D5710861BA4710B00F9C873 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Card.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,10 +64,10 @@
 			isa = PBXGroup;
 			children = (
 				4D57106F1BA3EE9B00F9C873 /* main.cpp */,
-				4D5710771BA3EF8500F9C873 /* CardDetector.cpp */,
-				4D5710761BA3EF7F00F9C873 /* CardDetector.h */,
-				4D5710791BA3F0BC00F9C873 /* Card.cpp */,
-				4D57107A1BA3F0BC00F9C873 /* Card.h */,
+				4D5710851BA4710B00F9C873 /* Card.cpp */,
+				4D5710861BA4710B00F9C873 /* Card.h */,
+				4D5710821BA4709100F9C873 /* TextBox.cpp */,
+				4D5710831BA4709100F9C873 /* TextBox.h */,
 			);
 			path = CardImageProcessor;
 			sourceTree = "<group>";
@@ -128,9 +128,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D57107B1BA3F0BC00F9C873 /* Card.cpp in Sources */,
 				4D5710701BA3EE9B00F9C873 /* main.cpp in Sources */,
-				4D5710781BA3EF8500F9C873 /* CardDetector.cpp in Sources */,
+				4D5710841BA4709100F9C873 /* TextBox.cpp in Sources */,
+				4D5710871BA4710B00F9C873 /* Card.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
