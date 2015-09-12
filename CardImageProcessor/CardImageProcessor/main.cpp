@@ -78,10 +78,14 @@ Mat processImage( Mat image, string imageFilename )
     //-------------------------
     // Detect Logo
     //
-    Mat OCRoutput = image.clone();
+    Mat sceneTextOutput = image.clone();
+    Mat OCRoutput       = image.clone();
     Card card;
     card.setFilename( imageFilename );
     
+    card.printSteps = true;
+    card.showSteps = false;
+    card.showOCRsteps = false;
     
     vector<TextBox> sceneTextRegions = card.detectText( image );
     vector<TextBox> OCRregions = card.recognizeText( sceneTextRegions );
@@ -89,10 +93,12 @@ Mat processImage( Mat image, string imageFilename )
     
     
     //-------------------------
-    // Show OCR regions on Image
+    // Show OCR regions on image
     //
-    if ( drawOCR )
+    if ( drawOCR && OCRregions.size() != 0)
     {
+        TextBox cardNumberBox( OCRregions[0] );
+
         for ( int i = 0; i < OCRregions.size(); i++ )
         {
             TextBox textBox = OCRregions[i];
@@ -100,7 +106,7 @@ Mat processImage( Mat image, string imageFilename )
             
             
             if ( card.downsize )
-            resize( image, OCRoutput, Size( 450, 287 ) ); //size = credit card's w:h ration
+            resize( image, OCRoutput, Size( 450, 287 ) ); //size = credit card's w:h ratio
             
             rectangle( OCRoutput, textBox.textBoxPosition, Scalar( 255, 0, 255 ), 3 );
             putText( OCRoutput,
@@ -113,50 +119,11 @@ Mat processImage( Mat image, string imageFilename )
             
         }
     }
+    
+    
+    // Print card number
+    cout << "Card Number: " << card.cardNumber << endl;
 
-    
-    
-    
-    
-    //-------------------------
-    // Print strings of each category
-    //
-    cout << "Cardholder Name: ";
-    for ( int i = 0; i < card.cardholderName.size();  ++i )
-    {
-        if ( i != card.cardholderName.size() - 1 )
-            cout << card.cardholderName[i] << ", ";
-        else
-            cout << card.cardholderName[i];
-    }
-    cout << endl;
-    
-    
-    
-    cout << "Expiriation Date: ";
-    for ( int i = 0; i < card.cardExp.size();  ++i )
-    {
-        if ( i != card.cardExp.size() - 1 )
-            cout << card.cardExp[i] << ", ";
-        else
-            cout << card.cardExp[i];
-    }
-    cout << endl;
-    
-    
-    
-    cout << "Serial Number: ";
-    for ( int i = 0; i < card.cardNumber.size();  ++i )
-    {
-        if ( i != card.cardNumber.size() - 1 )
-            cout << card.cardNumber[i] << ", ";
-        else
-            cout << card.cardNumber[i];
-    }
-    cout << endl;
-    
-    
-    
     
     // Machine learning purpose, not really
     // used but I leave it here just in case

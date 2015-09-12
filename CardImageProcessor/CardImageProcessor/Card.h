@@ -128,13 +128,17 @@ class Card
 public:
     Card();
     string filename;
-    vector<string> cardNumber;
-    vector<string> cardExp;
-    vector<string> cardholderName;
+    string cardNumber;
+
+    // Still constructing
+    vector<string> potentialExp;
+    vector<string> potentialName;
+    //! Still constructing
     
     bool downsize;
     bool printSteps;
     bool showSteps;
+    bool showOCRsteps;
     bool saveRegions;
     bool saveResult;
     

@@ -229,7 +229,7 @@ vector<TextBox> Card::detectText( Mat input )
         }
         
         
-        characterBoxes.push_back( TextBox( boxResized, nmBoxes[i] ) );
+        characterBoxes.push_back( TextBox( boxResized, nmBoxes[i], maxSize, minSize ) );
     }
     
     
@@ -291,8 +291,8 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
     //-------------------------
     // Initialize 1 instance of OCR Tesseract
     //
-    Ptr<OCRTesseract> ocr = OCRTesseract::create();
-    
+    Ptr<OCRTesseract> ocr = OCRTesseract::create( NULL, NULL, "0123456789", 3, 3 );
+
     
     
     //-------------------------
@@ -309,7 +309,12 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
     
     float minConfidence1 = 51.f; //51.f
     float minConfidence2 = 60.f; //60.f
+
     
+    int digitCounter        = 0;
+    int prevDigitCounter    = 0;
+    
+
     
     for ( int i = 0; i < possibleRegions.size(); ++i )
     {
@@ -318,6 +323,13 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
         
         // 1. Convert color
         cvtColor( region, grey, COLOR_BGR2GRAY );
+        
+        if ( showOCRsteps )
+        {
+            imshow( "1. Convert to Gray", grey );
+            waitKey( 2000 );
+        }
+        
         
         
         // 2. Extract channels to be processed individually
@@ -347,6 +359,13 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
                    "classifiers/trained_classifier_erGrouping.xml",
                    0.5 );
         
+        if ( showOCRsteps )
+        {
+            imshow( "4. erGrouping", region );
+            waitKey( 2000 );
+        }
+        
+        
         
         // 5. Group image (input region is already 1 group, but don't know
         // how to skip erGrouping above to jump directly to this below loop yet.
@@ -360,8 +379,16 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
             copyMakeBorder( groupImg, groupImg, 15, 15, 15, 15, BORDER_CONSTANT, Scalar( 0 ) );
             
             detections.push_back( groupImg );
-            
+
+            if ( showOCRsteps )
+            {
+                imshow( "5. Group Image", groupImg );
+                waitKey( 2000 );
+            }
+
         }
+        
+
         
         
         // 6. Read detected text
@@ -405,9 +432,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
         
         // Ignore images with no text
         if ( wordsDetection.size() == 0 )
-        {
             continue;
-        }
         
         
         // Save string's characters of each region
@@ -421,29 +446,19 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
             concatenatedString = concatenatedString + wordsDetection[j];
         
         
-        
-        // 8. Check each character, increment digitCounter
-        // each time found a digit use digitCounter to
-        // check whether the found string represents
-        // cardNumber, cardExp, or cardholderName
-        int digitCounter    = 0;
-        int alphabetCounter = 0;
+
+        prevDigitCounter    = digitCounter;
+        digitCounter        = 0;
         for ( int j = 0; j < concatenatedString.size(); ++j )
         {
             if ( isdigit( concatenatedString[j] ))
                 ++digitCounter;
-            else if ( isalpha( concatenatedString[j] ))
-                ++alphabetCounter;
         }
+
         
-        
-        
-        if ( digitCounter < 2 && alphabetCounter > 1 )
-            cardholderName.push_back( concatenatedString );
-        else if ( digitCounter >= 2 && digitCounter < 6 && alphabetCounter < 3 )
-            cardExp.push_back( concatenatedString );
-        else if ( digitCounter > 2 )
-            cardNumber.push_back( concatenatedString );
+        if ( digitCounter > 2 && digitCounter > prevDigitCounter )
+            cardNumber = concatenatedString;
+       
         
         
         if ( printSteps )
@@ -471,6 +486,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
         }
     }
     
-    
     return OCRregions;
+
+    
 }

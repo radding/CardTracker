@@ -13,10 +13,12 @@
 //--------------------------------------------------
 // Constructor
 //
-TextBox::TextBox( Mat img, Rect position )
+TextBox::TextBox( Mat img, Rect position, float w, float h )
 {
-    imgTextBox         = img;
-    textBoxPosition    = position;
+    imgTextBox      = img;
+    textBoxPosition = position;
+    width           = w;
+    height          = h;
 }
 
 

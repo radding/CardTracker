@@ -21,12 +21,14 @@ class TextBox
 {
     
 public:
-    TextBox( Mat img, Rect position );
+    TextBox( Mat img, Rect position, float width, float height );
     Mat imgTextBox;         //imgCard;
     Rect textBoxPosition;   //cardPosition;
     string str();
     vector<string> characters;
     vector<Rect> charactersPosition;
+    float width;
+    float height;
     
 };
 
