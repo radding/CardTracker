@@ -144,9 +144,6 @@ public:
     vector<Card> detectText( Mat input );
     vector<Card> recognizeText( vector<Card> regions );
     
-    // Don't need this because we'll use Microsoft Azure for SVM instead
-    //vector<Card> supportVectorMachine( vector<Card> regions );
-    
 };
 
 

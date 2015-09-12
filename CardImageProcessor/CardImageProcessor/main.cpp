@@ -115,6 +115,7 @@ Mat processImage( Mat image, string imageFilename )
                 2,
                 Scalar( 255, 0, 255 ),
                 5 );
+        cout << logoText << " ";
     }
     
     if ( cardDetector.saveResult )
