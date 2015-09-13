@@ -15,7 +15,7 @@ class Crawler(object):
         self.base = str(base)
         self.temp_base = str(base)
         self.visited = visited
-        print("[Crawler Initiated]")
+        print "<crawler>"
 
     def get_visited(self):
         print "VISITED ==> " + " , ".join(self.visited)
@@ -46,4 +46,4 @@ class Crawler(object):
                 self.temp_base = str(uri)
 
 
-        print("[Crawler Terminated]")
+        print "</crawler>\n"

@@ -2,6 +2,7 @@ from Queue import Queue
 from bs4 import BeautifulSoup
 import requests
 import url
+import urllib
 
 # disable warnings for debugging
 import urllib3
@@ -15,17 +16,21 @@ class Scraper(object):
         self.base = str(base)
         self.temp_base = str(base)
         self.visited = visited
-        print("[Scraper Initiated]")
+        print "<scraper>"
 
     def run(self, original):
         page = self.base
-        if page == "#":
+        if original in page:
+            pass
+        elif page == "#":
             return False
-        if page[0] == "/":
+        elif page[0] == "/":
             if original[len(original)-1] == "/":
                 page = original + page[1:]
             else:
                 page = original + page
+        else:
+            page = original + page
 
         self.visited.append(url.Url(page).to_json())
         print url.Url(page).to_json()
@@ -47,8 +52,12 @@ class Scraper(object):
                     uri = str(self.temp_base) + uri[1:]
 
                 self.visited.append(uri)
-                print "==> " + uri
+                image_url = str(original) + str(uri)
+                print "\n=====================[IMAGE]==>  " + image_url + "\n"
                 self.temp_base = str(uri)
 
+                # Save image locally
+                urllib.urlretrieve(image_url, "images/" + image_url.rsplit("/", 1)[-1])
 
-        print("[Scraper Terminated]")
+
+        print("</scraper>\n")

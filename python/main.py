@@ -1,10 +1,8 @@
-#import json
 import crawler
 import scraper
 
 def main():
-    #base = raw_input(']===>  scrape URL: ')
-    base = 'http://www.cse.msu.edu/~cse232/'
+    base = raw_input('===>  scrape URL: ')
     crawl = crawler.Crawler(base)
     crawl.run()
     crawl = crawl.get_visited()
