@@ -1,23 +1,27 @@
 from manager import Manager
+#from pymongo import MongoClient
 import json
+
+#client = MongoClient('mongodb://localhost:27017/')
+#db = client.test.database
 
 def main():
     #base = list(raw_input(']===>  scrape URL: '))
-    base = ['http://iah201.tumblr.com/syllabus']
+    base = 'http://www.cse.msu.edu/~cse232/'
     links = open('links.json', 'r+')
     pages = open('pages.json', 'r+')
     admin = Manager(links, pages)
 
     admin.crawler(base)
+
     while True:
-        for link in links:
-            admin.run(admin.crawler, list(link))
-#        admin.run(admin.scraper, list(pages))
+        links = open('links.json', 'r')
+        for line in links:
+            link = json.loads(line)['url'][0]
+            print("====>" + str(link))
+            admin.run(admin.crawler, str(link))
+
         admin.jobs.join()
-    '''
-    admin.run(admin.crawler, ['facebook.com'])
-    admin.run(admin.scraper, [])
-    '''
 
 
 main()

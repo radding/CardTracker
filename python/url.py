@@ -7,7 +7,7 @@ class Url(object):
         # Remove trailing "/"
         if url[len(url)-1:] =='/':
             url = url[0:len(url)-1]
-        self.url = url
+        self.url = str(url)
 
     def get_protocol(self):
         ''' Return values:
@@ -31,7 +31,7 @@ class Url(object):
 
         # Remove hostname
         if temp_url[0:4] == 'www.':
-            temp_url = temp_url[5:]
+            temp_url = str(temp_url[4:])
 
         return json.dumps({'https': self.get_protocol(),
-                           'url': temp_url}, sort_keys = True)
+                           'url': str(temp_url)}, sort_keys = True)

@@ -1,4 +1,5 @@
 from multiprocessing import Lock, Pool, Process, JoinableQueue
+#from pathos.multiprocessing import ProcessingPool as Pool
 from crawler import Crawler
 #from scraper import Scraper
 import json
@@ -18,10 +19,9 @@ class Manager(object):
         Scraper(page).run(self.pages)
 
     def run(self, proc, argz):
-        p = Process(target=proc, args=(argz))
+        p = Process(target=proc, args=(argz,))
         self.jobs.put(p)
         p.start()
-        self.jobs.task_done(p)
 
     '''
     def run_multi(self, proc, argz):
