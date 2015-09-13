@@ -211,7 +211,7 @@ vector<TextBox> Card::detectText( Mat input )
     for ( int i = 0; i < (int) nmBoxes.size(); ++i )
     {
         Mat boxCrop;
-        Mat boxResized;
+        Mat boxResized1, boxResized2, boxResized3, boxResized4;
         Point2f nmBoxCenter = Point2f( nmBoxes[i].tl().x + nmBoxes[i].width / 2,
                                       nmBoxes[i].tl().y + nmBoxes[i].height / 2 );
         float minSize = ( nmBoxes[i].width < nmBoxes[i].height ) ? nmBoxes[i].width : nmBoxes[i].height;
@@ -219,11 +219,15 @@ vector<TextBox> Card::detectText( Mat input )
         
         
         getRectSubPix( inputResized, nmBoxes[i].size(), nmBoxCenter, boxCrop );
-        boxResized.create( minSize, maxSize, boxCrop.type() );
+        boxResized1.create( minSize, maxSize, boxCrop.type() );
         
         
-        resize( boxCrop, boxResized, Size( 1000, 100 ), 0, 0, INTER_CUBIC ); //size = number w:h ratio
-        
+        resize( boxCrop, boxResized1, Size( 1000, 100 ), 0, 0, INTER_CUBIC ); //size = number w:h ratio in straight view
+        resize( boxCrop, boxResized2, Size( 500, 100 ), 0, 0, INTER_CUBIC ); //size = number w:h ratio in skewed view
+        resize( boxCrop, boxResized3, Size( 300, 100 ), 0, 0, INTER_CUBIC );
+        resize( boxCrop, boxResized4, Size( 150, 100 ), 0, 0, INTER_CUBIC );
+
+
         
         // Save regions to nmBoxes folder
         if ( saveRegions )
@@ -231,11 +235,15 @@ vector<TextBox> Card::detectText( Mat input )
             stringstream ss( stringstream::in | stringstream::out );
             
             ss << "nmBoxes/" << filename << "_cardNumber_" << i << ".JPG";
-            imwrite( ss.str(), boxResized );
+            imwrite( ss.str(), boxResized1 );
         }
         
         
-        characterBoxes.push_back( TextBox( boxResized, nmBoxes[i], maxSize, minSize ) );
+        characterBoxes.push_back( TextBox( boxResized1, nmBoxes[i], maxSize, minSize ) );
+        characterBoxes.push_back( TextBox( boxResized2, nmBoxes[i], maxSize, minSize ) );
+        characterBoxes.push_back( TextBox( boxResized3, nmBoxes[i], maxSize, minSize ) );
+        characterBoxes.push_back( TextBox( boxResized4, nmBoxes[i], maxSize, minSize ) );
+
     }
     
     
