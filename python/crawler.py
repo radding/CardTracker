@@ -11,37 +11,35 @@ import scraper
 class Crawler(object):
     ''' Crawler Class '''
 
-    def __init__(self, base):
+    def __init__(self, base, visited):
         self.base = str(base)
         self.temp_base = str(base)
-        self.visited = list()
+        self.visited = visited
         print("[Crawler initiated]")
 
-    def run(self, output_file):
-        output_file.write(url.Url(self.base).to_json() + "\n")
+    def run(self):
+        self.visited.append(url.Url(self.base).to_json())
         print url.Url(self.base).to_json()
+        self.visited.append(self.base)
 
         while self.visited != []:
-            # Grab all <a> tags
+            # Grab all <a> tagso
             bs_object = BeautifulSoup(requests.get(self.base).text, "html.parser")
             for link in bs_object.find_all('a'):
-
-                if link.get('href'):
+                if link.get('href') and link.get('href') not in self.visited:
                     uri = str(link.get('href'))
-                    print "link.href ==>" + uri
+                    self.visited.append(uri)
 
                     # fix url fragments
                     if uri[0] == '#':
-                        uri = str(self.temp_base)
+                        uri = str(self.base)
                     elif uri[0] == '/':
                         uri = str(self.temp_base) + uri
 
-                    # Add url to next_urls
-                    if uri not in self.visited:
-                        print("not in .visited ==> " + uri)
-                        self.visited.append(uri)
-                        self.temp_base = str(uri)
+                    print "uri ==> " + uri
+                    self.temp_base = str(uri)
+                else:
+                    break
 
-            self.visited.append(self.base)
 
         print("[Crawler Terminated]")
