@@ -1,5 +1,5 @@
-from bs4 import BeautifulSoup
 from Queue import Queue
+from bs4 import BeautifulSoup
 import requests
 import url
 
@@ -11,17 +11,17 @@ urllib3.disable_warnings()
 class Scraper(object):
     ''' Scraper Class '''
 
-    def __init__(self, base):
-        self.base = base
-        self.temp_base = base
-        self.prev_urls = list()
-        self.next_urls = Queue()
-        self.next_urls.put(base)
+    def __init__(self, page):
+        self.page = page
+        self.images = list()
+        self.next_imgs = Queue()
+        self.next_imgs.put(url)
 
-    def get_next_url(self):
-        return self.next_urls.get()
+    def get_img(self, output_file):
+        output_file.write(url.Url(self.url).to_json() + "\n")
 
-    def process_page(self, bs_object):
+    def get_links(self, ba):
+        bs_object = BeautifulSoup(requests.get(self.url).text, "html.parser")
         for link in bs_object.find_all('a'):
 
             if link.get('href'):
@@ -29,30 +29,11 @@ class Scraper(object):
 
                 # fix url fragments
                 if url[0] == '/':
-                    url = self.temp_base + url
+                    url = self.temp_base + url #[1:]
                 elif url[0] == '#':
                     url = self.temp_base
 
                 # Add url to next_urls
                 if url not in self.prev_urls:
-                    #print(url)
+                    print("=> " + url)
                     self.next_urls.put(url)
-
-    def run(self):
-        while not self.next_urls.empty():
-            next_url = self.get_next_url()
-            print(url.Url(next_url).to_json())
-
-            page = BeautifulSoup(requests.get(next_url).text, "html.parser")
-            self.prev_urls.append(next_url)
-            #self.temp_base = next_url
-            self.process_page(page)
-
-
-def main():
-    #base = raw_input('URL to scrape: ')
-    base = 'http://iah201.tumblr.com/syllabus'
-    Scraper(base).run()
-
-
-main()
