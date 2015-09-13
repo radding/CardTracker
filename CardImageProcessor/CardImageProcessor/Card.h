@@ -15,6 +15,7 @@
 #include <opencv2/text.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/opencv.hpp>
+#include <string>
 
 #include "TextBox.h"
 
@@ -154,5 +155,5 @@ public:
     
 };
 
-
+string processImage( Mat image, string imageFilename );
 #endif /* defined(__CardImageProcessor__Card__) */

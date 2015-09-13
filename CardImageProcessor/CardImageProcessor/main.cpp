@@ -138,41 +138,41 @@ string processImage( Mat image, string imageFilename )
 //--------------------------------------------------
 // Main
 //
-int main(int argc, const char * argv[])
-{
-    //-------------------------
-    // Retrieve image
-    //
-    cout << endl;
-    cout << "=== Card Image Processor ===" << endl;
-    
-    
-    if ( argc != 2 )
-    {
-        printUsage();
-        return 0;
-    }
-    
-    
-    string inputPath = argv[1];
-    string inputFilename = getFilename( inputPath );
-    
-    
-    Mat image;
-    image = imread( inputPath, 1 );
-    
-    
-    if ( !image.data )
-    {
-        cerr << "(!) Error opening " << argv[2] << endl;
-        return 0;
-    }
-    cout << "● Processing Image " << inputFilename << "..." << endl;
-    
-    
-    
-    string output = processImage( image, inputFilename );
-    cout << "Card Number: " << output << endl;
-    
-    return 0;
-}
+//int main(int argc, const char * argv[])
+//{
+//    //-------------------------
+//    // Retrieve image
+//    //
+//    cout << endl;
+//    cout << "=== Card Image Processor ===" << endl;
+//    
+//    
+//    if ( argc != 2 )
+//    {
+//        printUsage();
+//        return 0;
+//    }
+//    
+//    
+//    string inputPath = argv[1];
+//    string inputFilename = getFilename( inputPath );
+//    
+//    
+//    Mat image;
+//    image = imread( inputPath, 1 );
+//    
+//    
+//    if ( !image.data )
+//    {
+//        cerr << "(!) Error opening " << argv[2] << endl;
+//        return 0;
+//    }
+//    cout << "● Processing Image " << inputFilename << "..." << endl;
+//    
+//    
+//    
+//    string output = processImage( image, inputFilename );
+//    cout << "Card Number: " << output << endl;
+//    
+//    return 0;
+//}
