@@ -71,7 +71,7 @@ string getFilename( string filename )
 //--------------------------------------------------
 // Process Image
 //
-Card processImage( Mat image, string imageFilename )
+string processImage( Mat image, string imageFilename )
 {
     bool drawOCR = false; //set to false when combine program because drawing textboxes are still buggy
     int maxRunningTime = 0;
@@ -129,22 +129,8 @@ Card processImage( Mat image, string imageFilename )
         }
     }
     
-    
-    // Print card number
-    cout << "Card Number: " << card.cardNumber << endl;
-
-    
-    // Machine learning purpose, not really
-    // used but I leave it here just in case
-    if ( card.saveResult )
-    {
-        string outputFilename = "result/" + card.filename + "-OCR.JPG";
-        imwrite( outputFilename, OCRoutput );
-    }
-    
-    
-    
-    return card;
+        
+    return card.cardNumber;
 }
 
 
@@ -154,8 +140,6 @@ Card processImage( Mat image, string imageFilename )
 //
 int main(int argc, const char * argv[])
 {
-    bool showOCR = false;
-    
     //-------------------------
     // Retrieve image
     //
@@ -187,19 +171,8 @@ int main(int argc, const char * argv[])
     
     
     
-    Card output = processImage( image, inputFilename );
-    
-    
-    
-    // Show result
-//    if ( showOCR )
-//    {
-//        imshow( inputFilename , outputImage );
-//        waitKey( 0 );
-//    }
-    
-    
-    
+    string output = processImage( image, inputFilename );
+    cout << "Card Number: " << output << endl;
     
     return 0;
 }
