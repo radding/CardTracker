@@ -95,7 +95,7 @@ void Card::ERdraw( vector<Mat> &channels,
             floodFill( channels[group[i][0]],
                       segmentation,
                       Point( ER.pixel % channels[group[i][0]].cols,
-                            ER.pixel / channels[group[i][0]].cols),
+                            ER.pixel / channels[group[i][0]].cols ),
                       Scalar( 255 ),
                       0,
                       Scalar( ER.level ),
@@ -134,6 +134,12 @@ vector<TextBox> Card::detectText( Mat input )
                                                     0.2f,
                                                     true,
                                                     0.1f );
+        
+//        0.00015f,
+//        0.13f,
+//        0.2f,
+//        true,
+//        0.1f );
         
         Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "classifiers/trained_classifierNM2.xml" ), 0.5 );
         
@@ -307,15 +313,15 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
     vector<TextBox> OCRregions;
     
     
-    float minConfidence1 = 51.f; //51.f
-    float minConfidence2 = 60.f; //60.f
+    float minConfidence1 = 51.f;
+    float minConfidence2 = 60.f;
 
     
     int digitCounter        = 0;
     int prevDigitCounter    = 0;
     
 
-    
+
     for ( int i = 0; i < possibleRegions.size(); ++i )
     {
         Mat region = possibleRegions[i].imgTextBox;
@@ -449,6 +455,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
 
         prevDigitCounter    = digitCounter;
         digitCounter        = 0;
+        
         for ( int j = 0; j < concatenatedString.size(); ++j )
         {
             if ( isdigit( concatenatedString[j] ))
@@ -456,7 +463,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
         }
 
         
-        if ( digitCounter > 2 && digitCounter > prevDigitCounter )
+        if ( digitCounter > prevDigitCounter && digitCounter < 17 )
             cardNumber = concatenatedString;
        
         

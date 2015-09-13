@@ -74,6 +74,7 @@ string getFilename( string filename )
 Mat processImage( Mat image, string imageFilename )
 {
     bool drawOCR = false; //set to false when combine program because drawing textboxes are still buggy
+    int maxRunningTime = 0;
     
     //-------------------------
     // Detect Logo
@@ -87,8 +88,16 @@ Mat processImage( Mat image, string imageFilename )
     card.showSteps = false;
     card.showOCRsteps = false;
     
-    vector<TextBox> sceneTextRegions = card.detectText( image );
-    vector<TextBox> OCRregions = card.recognizeText( sceneTextRegions );
+    vector<TextBox> sceneTextRegions;
+    vector<TextBox> OCRregions;
+    
+    
+    do
+    {
+        sceneTextRegions = card.detectText( image );
+        OCRregions = card.recognizeText( sceneTextRegions );
+        ++maxRunningTime;
+    } while ( card.cardNumber.size() != 16 && maxRunningTime != 20 );
     
     
     
