@@ -71,7 +71,7 @@ string getFilename( string filename )
 //--------------------------------------------------
 // Process Image
 //
-Mat processImage( Mat image, string imageFilename )
+Card processImage( Mat image, string imageFilename )
 {
     bool drawOCR = false; //set to false when combine program because drawing textboxes are still buggy
     int maxRunningTime = 0;
@@ -144,7 +144,7 @@ Mat processImage( Mat image, string imageFilename )
     
     
     
-    return OCRoutput;
+    return card;
 }
 
 
@@ -187,16 +187,16 @@ int main(int argc, const char * argv[])
     
     
     
-    Mat outputImage = processImage( image, inputFilename );
+    Card output = processImage( image, inputFilename );
     
     
     
     // Show result
-    if ( showOCR )
-    {
-        imshow( inputFilename , outputImage );
-        waitKey( 0 );
-    }
+//    if ( showOCR )
+//    {
+//        imshow( inputFilename , outputImage );
+//        waitKey( 0 );
+//    }
     
     
     
