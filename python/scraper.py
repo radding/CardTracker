@@ -11,29 +11,44 @@ urllib3.disable_warnings()
 class Scraper(object):
     ''' Scraper Class '''
 
-    def __init__(self, page):
-        self.page = page
-        self.images = list()
-        self.next_imgs = Queue()
-        self.next_imgs.put(url)
+    def __init__(self, base, visited=[]):
+        self.base = str(base)
+        self.temp_base = str(base)
+        self.visited = visited
+        print("[Scraper Initiated]")
 
-    def get_img(self, output_file):
-        output_file.write(url.Url(self.url).to_json() + "\n")
+    def run(self, original):
+        page = self.base
+        if page == "#":
+            return False
+        if page[0] == "/":
+            if original[len(original)-1] == "/":
+                page = original + page[1:]
+            else:
+                page = original + page
 
-    def get_links(self, ba):
-        bs_object = BeautifulSoup(requests.get(self.url).text, "html.parser")
-        for link in bs_object.find_all('a'):
+        self.visited.append(url.Url(page).to_json())
+        print url.Url(page).to_json()
+        self.visited.append(page)
 
-            if link.get('href'):
-                url = link.get('href')
+        # Grab all <img> tags
+        bs_object = BeautifulSoup(requests.get(page).text, "html.parser")
+        for link in bs_object.find_all('img'):
+            if str(link.get('src')) in self.visited:
+                break
+            elif link.get('src') and str(link.get('src')) not in self.visited:
+                uri = str(link.get('src'))
+                self.visited.append(uri)
 
                 # fix url fragments
-                if url[0] == '/':
-                    url = self.temp_base + url #[1:]
-                elif url[0] == '#':
-                    url = self.temp_base
+                if uri[0] == '#':
+                    uri = str(page)
+                elif uri[0] == '/':
+                    uri = str(self.temp_base) + uri[1:]
 
-                # Add url to next_urls
-                if url not in self.prev_urls:
-                    print("=> " + url)
-                    self.next_urls.put(url)
+                self.visited.append(uri)
+                print "==> " + uri
+                self.temp_base = str(uri)
+
+
+        print("[Scraper Terminated]")
