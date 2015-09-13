@@ -8,7 +8,7 @@
 #include <ios>
 
 #include "cv_cpp_bridge.h"
-#include "CardImageProcessor/CardImageProcessor/Card.h"
+#include "Card.h"
 
 using std::string;
 using std::vector;

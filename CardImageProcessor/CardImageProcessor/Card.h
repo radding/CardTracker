@@ -156,4 +156,5 @@ public:
 };
 
 string processImage( Mat image, string imageFilename );
+
 #endif /* defined(__CardImageProcessor__Card__) */

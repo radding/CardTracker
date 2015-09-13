@@ -127,7 +127,7 @@ vector<TextBox> Card::detectText( Mat input )
     
     for ( int i = 0; i < 2; i++ )
     {
-        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "/home/ubuntu/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM1.xml"),
+        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "classifiers/trained_classifierNM1.xml"),
                                                     8,
                                                     0.00015f,
                                                     0.13f,
@@ -141,7 +141,7 @@ vector<TextBox> Card::detectText( Mat input )
 //        true,
 //        0.1f );
         
-        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "/home/ubuntu/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM2.xml" ), 0.5 );
+        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "classifiers/trained_classifierNM2.xml" ), 0.5 );
         
         ERfilters1.push_back( ERfilter1 );
         ERfilters2.push_back( ERfilter2 );
@@ -199,7 +199,7 @@ vector<TextBox> Card::detectText( Mat input )
                nmRegionGroups,
                nmBoxes,
                ERGROUPING_ORIENTATION_ANY,
-               "/home/ubuntu/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifier_erGrouping.xml",
+               "classifiers/trained_classifier_erGrouping.xml",
                0.5 );
     
     
@@ -286,7 +286,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
     
     for ( int i = 0; i < 2; i++ )
     {
-        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "/home/ubuntu/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM1.xml"),
+        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "classifiers/trained_classifierNM1.xml"),
                                                     8,
                                                     0.00015f,
                                                     0.13f,
@@ -294,7 +294,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
                                                     true,
                                                     0.1f );
         
-        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "/home/ubuntu/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM2.xml" ), 0.5 );
+        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "classifiers/trained_classifierNM2.xml" ), 0.5 );
         
         ERfilters1.push_back( ERfilter1 );
         ERfilters2.push_back( ERfilter2 );
@@ -370,7 +370,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
                    nmRegionGroups,
                    nmBoxes,
                    ERGROUPING_ORIENTATION_ANY,
-                   "/home/ubuntu/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifier_erGrouping.xml",
+                   "classifiers/trained_classifier_erGrouping.xml",
                    0.5 );
         
         if ( showOCRsteps )
@@ -504,4 +504,71 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
     return OCRregions;
 
     
+}
+
+
+
+//--------------------------------------------------
+// Process Image
+//
+string processImage( Mat image, string imageFilename )
+{
+    bool drawOCR = false; //set to false when combine program because drawing textboxes are still buggy
+    int maxRunningTime = 0;
+    
+    //-------------------------
+    // Detect Logo
+    //
+    Mat sceneTextOutput = image.clone();
+    Mat OCRoutput       = image.clone();
+    Card card;
+    card.setFilename( imageFilename );
+    
+    card.printSteps = true;
+    card.showSteps = false;
+    card.showOCRsteps = false;
+    
+    vector<TextBox> sceneTextRegions;
+    vector<TextBox> OCRregions;
+    
+    
+    do
+    {
+        sceneTextRegions = card.detectText( image );
+        OCRregions = card.recognizeText( sceneTextRegions );
+        ++maxRunningTime;
+    } while ( card.cardNumber.size() != 16 && maxRunningTime != 30 );
+    
+    
+    
+    //-------------------------
+    // Show OCR regions on image
+    //
+    if ( drawOCR && OCRregions.size() != 0)
+    {
+        TextBox cardNumberBox( OCRregions[0] );
+        
+        for ( int i = 0; i < OCRregions.size(); i++ )
+        {
+            TextBox textBox = OCRregions[i];
+            string text = textBox.str();
+            
+            
+            if ( card.downsize )
+            resize( image, OCRoutput, Size( 450, 287 ) ); //size = credit card's w:h ratio
+            
+            rectangle( OCRoutput, textBox.textBoxPosition, Scalar( 255, 0, 255 ), 3 );
+            putText( OCRoutput,
+                    text,
+                    Point( textBox.textBoxPosition.x, textBox.textBoxPosition.y - 10 ),
+                    FONT_HERSHEY_PLAIN,
+                    2,
+                    Scalar( 255, 0, 255 ),
+                    5 );
+            
+        }
+    }
+    
+    
+    return card.cardNumber;
 }

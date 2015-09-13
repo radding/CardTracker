@@ -5,7 +5,7 @@
 #include <opencv2/opencv.hpp>
 extern "C" {
 #endif
-#include <Python.h>
+#include <Python/Python.h>
 
 char** process_image(cv::Mat) ;
 
