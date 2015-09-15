@@ -127,7 +127,7 @@ vector<TextBox> Card::detectText( Mat input )
     
     for ( int i = 0; i < 2; i++ )
     {
-        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "classifiers/trained_classifierNM1.xml"),
+        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "/Users/Bamboo/Developer/Hackathon/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM1.xml"),
                                                     8,
                                                     0.00015f,
                                                     0.13f,
@@ -141,7 +141,7 @@ vector<TextBox> Card::detectText( Mat input )
 //        true,
 //        0.1f );
         
-        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "classifiers/trained_classifierNM2.xml" ), 0.5 );
+        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "/Users/Bamboo/Developer/Hackathon/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM2.xml" ), 0.5 );
         
         ERfilters1.push_back( ERfilter1 );
         ERfilters2.push_back( ERfilter2 );
@@ -199,7 +199,7 @@ vector<TextBox> Card::detectText( Mat input )
                nmRegionGroups,
                nmBoxes,
                ERGROUPING_ORIENTATION_ANY,
-               "classifiers/trained_classifier_erGrouping.xml",
+               "/Users/Bamboo/Developer/Hackathon/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifier_erGrouping.xml",
                0.5 );
     
     
@@ -286,7 +286,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
     
     for ( int i = 0; i < 2; i++ )
     {
-        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "classifiers/trained_classifierNM1.xml"),
+        Ptr<ERFilter> ERfilter1 = createERFilterNM1( loadClassifierNM1( "/Users/Bamboo/Developer/Hackathon/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM1.xml"),
                                                     8,
                                                     0.00015f,
                                                     0.13f,
@@ -294,7 +294,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
                                                     true,
                                                     0.1f );
         
-        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "classifiers/trained_classifierNM2.xml" ), 0.5 );
+        Ptr<ERFilter> ERfilter2 = createERFilterNM2( loadClassifierNM1( "/Users/Bamboo/Developer/Hackathon/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifierNM2.xml" ), 0.5 );
         
         ERfilters1.push_back( ERfilter1 );
         ERfilters2.push_back( ERfilter2 );
@@ -370,7 +370,7 @@ vector<TextBox> Card::recognizeText( vector<TextBox> possibleRegions )
                    nmRegionGroups,
                    nmBoxes,
                    ERGROUPING_ORIENTATION_ANY,
-                   "classifiers/trained_classifier_erGrouping.xml",
+                   "/Users/Bamboo/Developer/Hackathon/CardTracker/CardImageProcessor/CardImageProcessor/classifiers/trained_classifier_erGrouping.xml",
                    0.5 );
         
         if ( showOCRsteps )
