@@ -1,5 +1,5 @@
 beautifulsoup4==4.4.0
-httplib2==0.9.1
+httplib2==0.18.0
 pbr==1.7.0
 pyOpenSSL==0.13.1
 pytz==2015.4
